@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.abdul.simpledaggerhiltdemo.R
 import com.abdul.simpledaggerhiltdemo.common.Util
 import com.abdul.simpledaggerhiltdemo.data.model.Cryptocurrency
+import com.abdul.simpledaggerhiltdemo.databinding.ActivityMainBinding
 import com.abdul.simpledaggerhiltdemo.ui.adapter.CryptocurrencyAdapter
 import com.abdul.simpledaggerhiltdemo.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,15 +20,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var cryptocurrencyList: RecyclerView
+    private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        cryptocurrencyList = findViewById(R.id.cryptoCurrencyList)
-        cryptocurrencyList.layoutManager = LinearLayoutManager(this)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.cryptoCurrencyList.layoutManager = LinearLayoutManager(this)
 
         val isConnected = Util.isInternetAvailable(this)
         if (isConnected) {
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeCryptoCurrency() {
         viewModel.cryptoCurrency.observe(this, Observer {
-            cryptocurrencyList.adapter = CryptocurrencyAdapter(it)
+            binding.cryptoCurrencyList.adapter = CryptocurrencyAdapter(it)
         })
     }
 }
